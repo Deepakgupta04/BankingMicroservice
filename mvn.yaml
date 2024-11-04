@@ -1,15 +1,22 @@
 ---
-- name: Install Maven
-  hosts: 10.0.0.5
-  become: true  # This is necessary if the installation requires elevated privileges
-
+- name: Install Java and Apache2, then start Apache2
+  hosts: all
+  become: yes  # Run as sudo/root
+ 
   tasks:
-    - name: Update apt package index
+    - name: Install OpenJDK
       apt:
-        update_cache: yes
-
-    - name: Install Maven
-      apt:
-        name: maven
+        name: openjdk-11-jdk
         state: present
-
+        update_cache: yes
+ 
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present
+ 
+    - name: Ensure Apache2 is started and enabled
+      service:
+        name: apache2
+        state: started
+        enabled: yes
